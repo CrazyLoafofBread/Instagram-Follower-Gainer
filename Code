@@ -1,0 +1,57 @@
+from instapy import InstaPy
+from instapy import smart_run
+import sys
+import tkinter as tk
+from tkinter import ttk
+from tkinter import *
+
+global my_username
+global my_password
+
+global tags_list
+global to_avoid_list
+
+
+root = tk.Tk()
+root.title("Instagram Bot")
+username = ttk.Label(root, text = "Enter your username:").grid(column = 0, row = 0)
+password = ttk.Label(root, text = "Enter your password:").grid(column = 1, row = 0)
+tags = ttk.Label(root, text = "Enter tags:").grid(column = 0, row = 3)
+to_avoid = ttk.Label(root, text = "Enter subjects to avoid:").grid(column = 1, row = 3)
+
+def exit():
+    sys.exit()
+    return
+
+def click():
+    my_username = usernameSTR.get()
+    my_password = passwordSTR.get()
+    lst1 = tagsSTR.get()
+    lst2 = to_avoidSTR.get()
+    tags_list = lst1.split()
+    to_avoid_list = lst2.split()
+
+    session = InstaPy(username=my_username, password=my_password, headless_browser=False)
+
+    with smart_run(session):
+        session.set_relationship_bounds(enabled=True, delimit_by_numbers=True, max_followers=500, min_followers=30)
+        session.set_do_follow(True, percentage=100)
+        session.set_dont_like(to_avoid_list)
+        session.like_by_tags(tags_list, amount=10)
+
+usernameSTR = tk.StringVar()
+passwordSTR = tk.StringVar()
+tagsSTR = tk.StringVar()
+to_avoidSTR = tk.StringVar()
+
+usernameEntered = ttk.Entry(root, width = 12, textvariable = usernameSTR).grid(column = 0, row = 1)
+passwordEntered = ttk.Entry(root, width = 12, textvariable = passwordSTR).grid(column = 1, row = 1)
+tagsEntered = ttk.Entry(root, width = 12, textvariable = tagsSTR).grid(column = 0, row = 4)
+to_avoidEntered = ttk.Entry(root, width = 12, textvariable = to_avoidSTR).grid(column = 1, row = 4)
+button = ttk.Button(root, text = "submit", command = click).grid(column = 0, row = 5)
+button = ttk.Button(root, text= "cancel", command = exit).grid(column = 1, row = 5)
+
+root.mainloop()
+
+
+
